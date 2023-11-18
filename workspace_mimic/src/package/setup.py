@@ -13,7 +13,9 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        #to include launch folder in colcon build
         (os.path.join('share', package_name, 'launch'), glob(os.path.join('launch', '*launch.[pxy][yma]*'))),
+        #to include params folder in colcon build
         (os.path.join('share', package_name, 'params'), glob(os.path.join('params', '*params.yaml')))
     ],
     install_requires=['setuptools'],

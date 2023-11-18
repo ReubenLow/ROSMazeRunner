@@ -14,7 +14,14 @@
 MUST READ
 1. https://navigation.ros.org/commander_api/index.html#simple-commander-api
 
-Reference for Creating a Launch File
-1. Launching a launch file
-   - ros2 launch turtlebot3_gazebo assmaze.launch.py
-   - ros2 launch mark_1 nav_to_pose_example.launch.py
+# Launch File:
+
+1. Ensure that setup.py is properly setup with the naming of the launch folder and params
+2. Ensure that source install/local_setup.bash is executed before launching
+3. Ensure that no nodes are active "ros2 node list". If not, kill them or restart (experience)
+4. Main focus now is tuning in of navigation parameters AND
+5. Creating an algorithm that would increment/decrement, store waypoints(to go back if stuck) until robot exits the maze
+
+ros2 launch <your_package_name> <your_launch_filename>.py
+
+

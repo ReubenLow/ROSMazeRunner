@@ -25,3 +25,9 @@ MUST READ
 ros2 launch <your_package_name> <your_launch_filename>.py
 
 
+# Issue Remedy Archives:
+Unknown Parameter to be set to true for costmaps with voxel or obstacle layer. Planner prefers free space to chart a path. without doing the necessary,
+unknown areas in costmaps are treated as free spaces. Hence, set it for both global and local costmaps
+1. https://answers.ros.org/question/215538/allow_unknown-parameter-ignored/
+
+

@@ -55,59 +55,57 @@ def travel(navigator, path):
     while not navigator.isTaskComplete():
         i = 1
 
-def endTraversal(prevDir, direction, end_case):
-    if(prevDir == direction):
-        end_case = end_case + 1
-    else:
-        direction = prevDir
-        end_case = 0
-        count_traverse = 0
-    if(end_case >= 20):
-        return True
-    else:
-        return None
 
 
 
 #stack to pass the stack across the traversal
 #end_case variable to dictate when to stop recursion
-def traverse(stack, navigator):
+#fromDir
+#from left : -1
+#from right : +1
+#from top: -2
+#from bottom : +2
+#start at centre : -3
+def traverse(stack, navigator, fromDir):
     #retrieve previous goal
     prev_goal = peek(stack)
     #copy previous goal
     new_goal = prev_goal
     print("Traverse")
     #right
-    new_goal.pose.position.y = new_goal.pose.position.y - 1
-    path = navigator.getPath(prev_goal, new_goal)
-    if(path != None):
-        print("Path exist!")
-        print("Go Right")
-        stack.append(new_goal)
-        travel(navigator, path)
-        #recursion happens here
-        traverse(stack, navigator)
-    else:
-        print("Path does not exist!")
+    if(fromDir != 1):
+        new_goal.pose.position.y = new_goal.pose.position.y - 1
+        path = navigator.getPath(prev_goal, new_goal)
+        if(path != None):
+            print("Path exist!")
+            print("Go Right")
+            printPose(new_goal)
+            stack.append(new_goal)
+            travel(navigator, path)
+            #recursion happens here
+            traverse(stack, navigator, -1)
+        else:
+            print("Path does not exist!")
 
-    new_goal.pose.position.y = new_goal.pose.position.y + 1 #undo the increment
+        new_goal.pose.position.y = new_goal.pose.position.y + 1 #undo the increment
     #######################################################################################
     #left
-        
-    new_goal.pose.position.y = new_goal.pose.position.y + 1
+    if(fromDir != -1):
+        new_goal.pose.position.y = new_goal.pose.position.y + 1
 
-    path = navigator.getPath(prev_goal, new_goal)
-    if(path != None):
-        print("Path exist!")
-        print("Go Right")
-        stack.append(new_goal)
-        travel(navigator, path)
-        #recursion happens here
-        traverse(stack, navigator)
-    else:
-        print("Path does not exist!")
+        path = navigator.getPath(prev_goal, new_goal)
+        if(path != None):
+            print("Path exist!")
+            print("Go Left")
+            printPose(new_goal)
+            stack.append(new_goal)
+            travel(navigator, path)
+            #recursion happens here
+            traverse(stack, navigator, 1)
+        else:
+            print("Path does not exist!")
 
-    new_goal.pose.position.y = new_goal.pose.position.y - 1 #undo the increment
+        new_goal.pose.position.y = new_goal.pose.position.y - 1 #undo the increment
 
 def main():
     rclpy.init()
@@ -128,7 +126,7 @@ def main():
     #first node into stack
     historical_poses.append(initial_pose)
 
-    status = traverse(historical_poses, navigator)
+    status = traverse(historical_poses, navigator, -3)
 
     if(status == True):
         print("Traverse operation complete")

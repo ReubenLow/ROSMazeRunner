@@ -1,0 +1,139 @@
+from geometry_msgs.msg import PoseWithCovarianceStamped
+from geometry_msgs.msg import PoseStamped
+from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult
+import rclpy
+from rclpy.duration import Duration
+from rclpy.node import Node
+
+
+
+def printPose(pose_obj):
+    print("Pose: ")
+    print(pose_obj.pose.position.x)
+    print(pose_obj.pose.position.y)
+
+
+
+#mimics std::stack top()
+def peek(stack):
+    element = stack.pop()
+    stack.append(element)
+    return element
+
+
+class MARK_Initial_Pose_State(Node):
+    def __init__(self):
+        super().__init__('PoseMark')
+        self.subscription = self.create_subscription(PoseWithCovarianceStamped, 'pose', self.mark_callback, 10)
+        self.subscription #Prevent unused warning
+        self.startPose = PoseStamped()
+
+
+    def mark_callback(self, msg):
+        self.startPose.pose.position.x = msg.pose.pose.position.x
+        self.startPose.pose.position.y = msg.pose.pose.position.y
+        self.startPose.pose.position.z = msg.pose.pose.position.z
+        self.startPose.pose.orientation.z = msg.pose.pose.orientation.z
+        self.startPose.pose.orientation.w = msg.pose.pose.orientation.w
+
+    def mark_return_initial_pose(self):
+        n = 0
+        while(n < 2):
+            n = n + 1
+        self.startPose.header.frame_id = 'map'
+        #shuts down this node subscription
+        self.destroy_subscription(self.subscription)
+        print("Initial pose:")
+        print(self.startPose.pose.position.x)
+        print(self.startPose.pose.position.y)
+        return self.startPose
+
+
+def travel(navigator, path):
+    navigator.followPath(path)
+    i = 0
+    while not navigator.isTaskComplete():
+        i = 1
+
+def endTraversal(prevDir, direction, end_case):
+    if(prevDir == direction):
+        end_case = end_case + 1
+    else:
+        direction = prevDir
+        end_case = 0
+        count_traverse = 0
+    if(end_case >= 20):
+        return True
+    else:
+        return None
+
+
+
+#stack to pass the stack across the traversal
+#end_case variable to dictate when to stop recursion
+def traverse(stack, navigator):
+    #retrieve previous goal
+    prev_goal = peek(stack)
+    #copy previous goal
+    new_goal = prev_goal
+    print("Traverse")
+    #right
+    new_goal.pose.position.y = new_goal.pose.position.y - 1
+    path = navigator.getPath(prev_goal, new_goal)
+    if(path != None):
+        print("Path exist!")
+        print("Go Right")
+        stack.append(new_goal)
+        travel(navigator, path)
+        #recursion happens here
+        traverse(stack, navigator)
+    else:
+        print("Path does not exist!")
+
+    new_goal.pose.position.y = new_goal.pose.position.y + 1 #undo the increment
+    #######################################################################################
+    #left
+        
+    new_goal.pose.position.y = new_goal.pose.position.y + 1
+
+    path = navigator.getPath(prev_goal, new_goal)
+    if(path != None):
+        print("Path exist!")
+        print("Go Right")
+        stack.append(new_goal)
+        travel(navigator, path)
+        #recursion happens here
+        traverse(stack, navigator)
+    else:
+        print("Path does not exist!")
+
+    new_goal.pose.position.y = new_goal.pose.position.y - 1 #undo the increment
+
+def main():
+    rclpy.init()
+    direction = ''
+    #node stack
+    historical_poses = []
+    #navigator node
+    navigator = BasicNavigator()
+    navigator.node_name = "SimpleCommander"
+
+
+    #initial pose set
+    firstCommand = MARK_Initial_Pose_State()
+    initial_pose = firstCommand.mark_return_initial_pose()
+    initial_pose.header.stamp = navigator.get_clock().now().to_msg()
+    navigator.setInitialPose(initial_pose)
+
+    #first node into stack
+    historical_poses.append(initial_pose)
+
+    status = traverse(historical_poses, navigator)
+
+    if(status == True):
+        print("Traverse operation complete")
+        return
+
+
+if __name__ == '__main__':
+    main()

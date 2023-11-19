@@ -2,6 +2,9 @@
 
 
 # Launching Gazebo, RVIZ and Navigation Stack without prior mapping:
+**Either through the launch file I produced OR :**
+
+
 1. export TURTLEBOT3_MODEL=burger
 2. ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 3. ros2 launch nav2_bringup navigation_launch.py

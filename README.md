@@ -16,6 +16,7 @@
 # Archives:
 MUST READ
 1. https://navigation.ros.org/commander_api/index.html#simple-commander-api
+2. https://navigation.ros.org/configuration/packages/configuring-amcl.html
 
 # Launch File:
 

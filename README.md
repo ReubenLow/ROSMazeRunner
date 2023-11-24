@@ -37,3 +37,7 @@ AMCL guarantees no change to map but SLAM does - can we incorporate AMCL instead
 3. https://answers.ros.org/question/246747/difference-between-localisation-with-amcl-and-slam/
 
 
+# Critical directories:
+/opt/ros/humble/share/slam_toolbox
+
+

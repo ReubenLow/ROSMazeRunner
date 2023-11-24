@@ -6,10 +6,9 @@
 
 
 1. export TURTLEBOT3_MODEL=burger
-2. ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
-3. ros2 launch nav2_bringup navigation_launch.py
-4. ros2 launch slam_toolbox online_async_launch.py
-5. ros2 run rviz2 rviz2 -d $(ros2 pkg prefix nav2_bringup)/share/nav2_bringup/rviz/nav2_default_view.rviz
+2. source install/local_setup.bash
+3. ros2 launch mark_1 mark1_launch.py
+4. ros2 run rviz2 rviz2 -d $(ros2 pkg prefix nav2_bringup)/share/nav2_bringup/rviz/nav2_default_view.rviz
 
 
 

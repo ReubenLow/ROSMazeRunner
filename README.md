@@ -34,7 +34,10 @@ unknown areas in costmaps are treated as free spaces. Hence, set it for both glo
 1. https://answers.ros.org/question/215538/allow_unknown-parameter-ignored/
 
 AMCL guarantees no change to map but SLAM does - can we incorporate AMCL instead?
-3. https://answers.ros.org/question/246747/difference-between-localisation-with-amcl-and-slam/
+2. https://answers.ros.org/question/246747/difference-between-localisation-with-amcl-and-slam/
+
+No local costmap found when launching rviz. Use the modified mark1_params.yaml file.
+3. https://answers.ros.org/question/366732/no-local-costmap/
 
 
 # Critical directories:
